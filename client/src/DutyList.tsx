@@ -201,7 +201,7 @@ function DutyList() {
 
           {selectedDuty && (
             <Modal
-              title={`Update Duty ID [${selectedDuty.id}]`}
+              title={`Edit Duty ID [${selectedDuty.id}]`}
               open={updateModalVisible}
               onCancel={closeUpdateModal}
               footer={[
