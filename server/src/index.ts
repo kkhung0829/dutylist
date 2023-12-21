@@ -19,6 +19,7 @@ const db = new DB(
 const app = express();
 app.use(helmet());
 
+// Serve client web page
 const clientPath = path.join(__dirname, '..', '..', 'client', 'build');
 app.use(express.static(clientPath));
 app.get('/', function (req, res) {
@@ -27,6 +28,7 @@ app.get('/', function (req, res) {
 
 app.use(bodyParser.json());
 
+// Serve duty api
 const dutyRouter = new DutyRouter(db);
 app.use('/duty', dutyRouter.router);
 

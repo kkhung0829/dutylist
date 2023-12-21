@@ -1,12 +1,18 @@
 import { Pool } from 'pg';
 import { Duty } from './types';
 
+/**
+ * DB error returned
+ */
 export interface DBError {
     message: string;
     status: number;
 }
 
 export class DB {
+    /**
+     * DB class for handling database operations
+     */
     pool: Pool;
 
     constructor(
@@ -25,6 +31,9 @@ export class DB {
         });
     }
 
+    /**
+     * Query all duties
+     */
     async queryAllDutys(): Promise<Duty[]> {
         try {
             const client = await this.pool.connect();
@@ -40,6 +49,9 @@ export class DB {
         }
     }
 
+    /**
+     * Add new duty
+     */
     async addDuty(duty: Duty): Promise<Duty> {
         try {
             const client = await this.pool.connect();
@@ -59,6 +71,9 @@ export class DB {
         }
     }
 
+    /**
+     * Update existing duty
+     */
     async updateDuty(duty: Duty): Promise<Duty> {
         try {
             const client = await this.pool.connect();
@@ -69,6 +84,7 @@ export class DB {
             client.release();
 
             if (result.rowCount === 0) {
+                // No record updated
                 throw {
                     message: 'Duty not found',
                     status: 404,
@@ -85,6 +101,9 @@ export class DB {
         }
     }
 
+    /**
+     * Delete existing duty
+     */
     async deleteDuty(id: string): Promise<Duty> {
         try {
             const client = await this.pool.connect();
@@ -92,6 +111,7 @@ export class DB {
             client.release();
 
             if (result.rowCount === 0) {
+                // No record deleted
                 throw {
                     message: 'Duty not found',
                     status: 404,

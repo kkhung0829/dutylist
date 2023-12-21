@@ -44,6 +44,9 @@ function DutyList() {
     fetchDutys();
   }, []);
 
+  /**
+   * Fetch duties from server
+   */
   const fetchDutys = async () => {
     try {
       const response = await fetch('/duty');
@@ -65,6 +68,9 @@ function DutyList() {
     setAddModalVisible(false);
   };
 
+  /**
+   * Add new duty to server
+   */
   const addDuty = async (values: { id: string, name: string }) => {
     try {
       const response = await fetch('/duty', {
@@ -103,6 +109,9 @@ function DutyList() {
     setUpdateModalVisible(false);
   };
 
+  /**
+   * Update existing duty from server
+   */
   const updateDuty = async (values: { name: string }) => {
     if (!selectedDuty) return;
 
@@ -141,6 +150,9 @@ function DutyList() {
     setDeleteModalVisible(false);
   };
 
+  /**
+   * Delete existing duty from server
+   */
   const deleteDuty = async (id: string) => {
     try {
       const response = await fetch(`/duty/${id}`, {
@@ -165,10 +177,10 @@ function DutyList() {
       <Layout style={layoutStyle}>
         <Header style={headerStyle}>Duty List</Header>
         <Content>
-
           <FloatButton icon={<PlusCircleTwoTone />}
             onClick={openAddModal}
           />
+
           <Modal
             title="Add Duty"
             open={addModalVisible}
