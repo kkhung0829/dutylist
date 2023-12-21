@@ -29,12 +29,12 @@ Press button "Add" and the new duty will be uploaded to server.
 
 ## Edit Duty
 To edit duty, simply click the "Edit" under Action column. Then edit the duty information
-![image](https://github.com/kkhung0829/dutylist/assets/22828883/f55a5cc9-2ca6-4b57-a600-f18445f27d66)
+![image](https://github.com/kkhung0829/dutylist/assets/22828883/fde03eac-732f-4ae6-871d-237dcb8e9da2)
 Press button "Update" and the new duty information will be uploaded to server.
 ![image](https://github.com/kkhung0829/dutylist/assets/22828883/1f38f7fb-ca54-48d0-8880-7bfa01eb4e19)
 
 ## Delete Duty
 To delete duty, simply click the "Delete" under Action column.
-![image](https://github.com/kkhung0829/dutylist/assets/22828883/ae5ccbe5-534d-45f8-a4fd-4c3821aacd3f)
+![image](https://github.com/kkhung0829/dutylist/assets/22828883/f48c067f-5a82-4d0b-a916-aa6fb51ca39f)
 Confirm deletion by press Delete button and the duty will be removed from server.
 ![image](https://github.com/kkhung0829/dutylist/assets/22828883/be5912b5-adad-4c2b-9937-6c5737c6365d)
