@@ -1,30 +1,54 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Modal, Form, Input, message, Table, Space } from 'antd';
+import {
+  Button,
+  Modal,
+  Form,
+  Input,
+  message,
+  Table,
+  Space,
+  FloatButton,
+  Layout,
+} from 'antd';
+import { PlusCircleTwoTone } from '@ant-design/icons';
+import { Duty } from './types';
 const { Column } = Table;
+const { Header, Content } = Layout;
 
-interface Duty {
-  id: string;
-  name: string;
-}
+const layoutStyle = {
+  borderRadius: 8,
+  overflow: 'hidden',
+  // width: 'calc(50% - 8px)',
+  // maxWidth: 'calc(50% - 8px)',
+};
+
+const headerStyle: React.CSSProperties = {
+  textAlign: 'center',
+  color: '#fff',
+  height: 64,
+  paddingInline: 48,
+  lineHeight: '64px',
+  backgroundColor: '#4096ff',
+};
 
 function DutyList() {
   const [addFormRef] = Form.useForm();
   const [updateFormRef] = Form.useForm();
-  const [duties, setDuties] = useState<Duty[]>([]);
+  const [dutys, setDutys] = useState<Duty[]>([]);
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [updateModalVisible, setUpdateModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [selectedDuty, setSelectedDuty] = useState<Duty | null>(null);
 
   useEffect(() => {
-    fetchDuties();
+    fetchDutys();
   }, []);
 
-  const fetchDuties = async () => {
+  const fetchDutys = async () => {
     try {
       const response = await fetch('/duty');
       const data = await response.json()
-      setDuties(data);
+      setDutys(data);
       console.log('Fetched duties:', data);
     } catch (error) {
       console.error('Error fetching duties:', error);
@@ -55,7 +79,7 @@ function DutyList() {
         const newDuty: Duty = await response.json();
         console.log('Added duty:', newDuty);
 
-        setDuties([...duties, newDuty]);
+        setDutys([...dutys, newDuty]);
         closeAddModal();
 
         message.success('Duty added successfully');
@@ -79,7 +103,7 @@ function DutyList() {
     setUpdateModalVisible(false);
   };
 
-  const updateTodo = async (values: { name: string }) => {
+  const updateDuty = async (values: { name: string }) => {
     if (!selectedDuty) return;
 
     try {
@@ -93,9 +117,9 @@ function DutyList() {
 
       if (response.ok) {
         const updatedDuty: Duty = { ...selectedDuty, name: values.name };
-        console.log('Updated todo:', updatedDuty);
+        console.log('Updated duty:', updatedDuty);
 
-        setDuties(duties.map((duty) => ((duty.id === selectedDuty!.id) ? updatedDuty : duty)));
+        setDutys(dutys.map((duty) => ((duty.id === selectedDuty!.id) ? updatedDuty : duty)));
         closeUpdateModal();
         message.success('Duty updated successfully');
       } else {
@@ -124,7 +148,7 @@ function DutyList() {
       });
 
       if (response.ok) {
-        setDuties(duties.filter((todo) => todo.id !== id));
+        setDutys(dutys.filter((duty) => duty.id !== id));
         closeDeleteModal();
         message.success('Duty deleted successfully');
       } else {
@@ -138,94 +162,99 @@ function DutyList() {
 
   return (
     <div>
-      <Button type="primary" onClick={openAddModal}>
-        Add Duty
-      </Button>
+      <Layout style={layoutStyle}>
+        <Header style={headerStyle}>Duty List</Header>
+        <Content>
 
-      <Modal
-        title="Add Duty"
-        open={addModalVisible}
-        onCancel={closeAddModal}
-        footer={[
-          <Button key="cancel" onClick={closeAddModal}>
-            Cancel
-          </Button>,
-          <Button key="add" type="primary" onClick={() => addFormRef.submit()}
+          <FloatButton icon={<PlusCircleTwoTone />}
+            onClick={openAddModal}
+          />
+          <Modal
+            title="Add Duty"
+            open={addModalVisible}
+            onCancel={closeAddModal}
+            footer={[
+              <Button key="cancel" onClick={closeAddModal}>
+                Cancel
+              </Button>,
+              <Button key="add" type="primary" onClick={() => addFormRef.submit()}
+              >
+                Add
+              </Button>,
+            ]}
           >
-            Add
-          </Button>,
-        ]}
-      >
-        <Form onFinish={addDuty} form={addFormRef}>
-          <Form.Item label="ID" name="id"
-            rules={[
-              { required: true, message: 'Please enter duty id' }
-            ]}>
-            <Input placeholder="id" />
-          </Form.Item>
-          <Form.Item label="Name" name="name"
-            rules={[
-              { required: true, message: 'Please enter duty name' }
-            ]}>
-            <Input placeholder="name" />
-          </Form.Item>
-        </Form>
-      </Modal>
+            <Form onFinish={addDuty} form={addFormRef}>
+              <Form.Item label="ID" name="id"
+                rules={[
+                  { required: true, message: 'Please enter duty id' }
+                ]}>
+                <Input placeholder="id" />
+              </Form.Item>
+              <Form.Item label="Name" name="name"
+                rules={[
+                  { required: true, message: 'Please enter duty name' }
+                ]}>
+                <Input placeholder="name" />
+              </Form.Item>
+            </Form>
+          </Modal>
 
-      {selectedDuty && (
-        <Modal
-          title={`Update Todo ID [${selectedDuty.id}]`}
-          open={updateModalVisible}
-          onCancel={closeUpdateModal}
-          footer={[
-            <Button key="cancel" onClick={closeUpdateModal}>
-              Cancel
-            </Button>,
-            <Button key="update" type="primary" onClick={() => updateFormRef.submit()}>
-              Update
-            </Button>,
-          ]}
-        >
-          <Form onFinish={updateTodo} form={updateFormRef}>
-            <Form.Item label="Name" name="name"
-              rules={[
-                { required: true, message: 'Please enter new duty name' }
+          {selectedDuty && (
+            <Modal
+              title={`Update Duty ID [${selectedDuty.id}]`}
+              open={updateModalVisible}
+              onCancel={closeUpdateModal}
+              footer={[
+                <Button key="cancel" onClick={closeUpdateModal}>
+                  Cancel
+                </Button>,
+                <Button key="update" type="primary" onClick={() => updateFormRef.submit()}>
+                  Update
+                </Button>,
               ]}
             >
-              <Input placeholder="name" />
-            </Form.Item>
-          </Form>
-        </Modal>
-      )}
+              <Form onFinish={updateDuty} form={updateFormRef}>
+                <Form.Item label="Name" name="name"
+                  rules={[
+                    { required: true, message: 'Please enter new duty name' }
+                  ]}
+                >
+                  <Input placeholder="name" />
+                </Form.Item>
+              </Form>
+            </Modal>
+          )}
 
-      {selectedDuty && (
-      <Modal
-        title={`Delete Todo ID [${selectedDuty.id}]`}
-        open={deleteModalVisible}
-        onCancel={closeDeleteModal}
-        footer={[
-          <Button key="cancel" onClick={closeDeleteModal}>
-            Cancel
-          </Button>,
-          <Button key="delete" type="primary" danger onClick={() => deleteDuty(selectedDuty.id)}>
-            Delete
-          </Button>,
-        ]}
-      >
-        <p>Are you sure you want to delete "{selectedDuty.name}"?</p>
-      </Modal>
-      )}
+          {selectedDuty && (
+            <Modal
+              title={`Delete Duty ID [${selectedDuty.id}]`}
+              open={deleteModalVisible}
+              onCancel={closeDeleteModal}
+              footer={[
+                <Button key="cancel" onClick={closeDeleteModal}>
+                  Cancel
+                </Button>,
+                <Button key="delete" type="primary" danger onClick={() => deleteDuty(selectedDuty.id)}>
+                  Delete
+                </Button>,
+              ]}
+            >
+              <p>Are you sure you want to delete "{selectedDuty.name}"?</p>
+            </Modal>
+          )}
 
-      <Table dataSource={duties}>
-        <Column title="ID" dataIndex="id" key="id"/>
-        <Column title="Name" dataIndex="name" key="name"/>
-        <Column title="Action" key="action" render={(_: any, todo: Duty) => (
-        <Space size="middle">
-          <a onClick={() => openUpdateModal(todo)}>Edit</a>
-          <a onClick={() => openDeleteModal(todo)}>Delete</a>
-        </Space>
-      )}/>
-      </Table>
+          <Table dataSource={dutys}>
+            <Column title="ID" dataIndex="id" key="id" />
+            <Column title="Name" dataIndex="name" key="name" />
+            <Column title="Action" key="action" render={(_: any, duty: Duty) => (
+              <Space size="middle">
+                <a onClick={() => openUpdateModal(duty)}>Edit</a>
+                <a onClick={() => openDeleteModal(duty)}>Delete</a>
+              </Space>
+            )} />
+          </Table>
+        </Content>
+      </Layout>
     </div>
   );
 };

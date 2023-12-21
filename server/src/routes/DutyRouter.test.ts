@@ -1,12 +1,24 @@
 import request from 'supertest';
-import { dutyRouter } from './duty';
+import { Duty } from '../types';
+import { DB } from '../DB';
+import { DutyRouter } from './DutyRouter';
 import express from 'express';
+
+const db = new DB(
+  process.env.DB_NAME,
+  process.env.DB_HOST,
+  parseInt(process.env.DB_PORT || "", 10),
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
+);
 
 const app = express();
 app.use(express.json());
-app.use('/duty', dutyRouter);
 
-describe('Duty API', () => {
+const dutyRouter = new DutyRouter(db);
+app.use('/duty', dutyRouter.router);
+
+describe('DutyRouter API', () => {
   it('should get all duties', async () => {
     const response = await request(app).get('/duty');
     expect(response.status).toBe(200);
@@ -14,7 +26,7 @@ describe('Duty API', () => {
   });
 
   it('should create a new duty', async () => {
-    const newDuty = { id: '0001', name: 'This is a test duty' };
+    const newDuty: Duty = { id: '0001', name: 'This is a test duty' };
     const response = await request(app)
       .post('/duty')
       .send(newDuty);
@@ -23,14 +35,14 @@ describe('Duty API', () => {
   });
 
   it('should update an existing duty', async () => {
-    const orgDuty = { id: '0002', name: 'This is a test duty for update' };
+    const orgDuty: Duty = { id: '0002', name: 'This is a test duty for update' };
     const createResponse = await request(app)
       .post('/duty')
       .send(orgDuty);
   
     const id = createResponse.body.id;
   
-    const newDuty = {...orgDuty, name: 'This is updated duty'};
+    const newDuty: Duty = {...orgDuty, name: 'This is updated duty'};
     const updateResponse = await request(app)
       .put(`/duty/${id}`)
       .send({ name: newDuty.name});
@@ -40,7 +52,7 @@ describe('Duty API', () => {
   });
 
   it('should delete existing duty', async () => {
-    const existingDutys = [
+    const existingDutys: Duty[] = [
       { id: '0001', name: 'This is a test duty' },
       { id: '0002', name: 'This is updated duty' },
     ];

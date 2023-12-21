@@ -3,9 +3,18 @@ import path from 'path';
 import helmet from 'helmet';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
-import { dutyRouter } from './routes/duty';
+import { DB } from './DB';
+import { DutyRouter } from './routes/DutyRouter';
 
 dotenv.config();
+
+const db = new DB(
+  process.env.DB_NAME,
+  process.env.DB_HOST,
+  parseInt(process.env.DB_PORT || "", 10),
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
+);
 
 const app = express();
 app.use(helmet());
@@ -18,7 +27,8 @@ app.get('/', function (req, res) {
 
 app.use(bodyParser.json());
 
-app.use('/duty', dutyRouter);
+const dutyRouter = new DutyRouter(db);
+app.use('/duty', dutyRouter.router);
 
 const port = process.env.PORT || 8080;
 app.listen(port, () => {
