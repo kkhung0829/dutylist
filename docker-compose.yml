@@ -1,0 +1,24 @@
+version: '3.2'
+
+services:
+  postgres:
+    image: postgres:9.4
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=dutylistdb
+    volumes:
+      - ./postgres:/docker-entrypoint-initdb.d
+      - dutylist-db:/var/lib/postgresql/data
+
+  dutylist:
+    build: .
+    environment:
+      - DB_HOST=postgres
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+  
+volumes:
+  dutylist-db:
